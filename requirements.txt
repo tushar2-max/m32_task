@@ -1,0 +1,12 @@
+Django>=4.2,<5.0          # Framework for building the web app
+python-docx               # For handling .docx files
+langchain                 # LangChain for conversational AI
+faiss-cpu                 # FAISS library for vector stores (CPU version)
+openai                    # OpenAI API integration
+django-dotenv             # For loading environment variables from .env
+gunicorn                  # WSGI HTTP server for deployment
+python-dotenv
+langchain-community
+gunicorn
+tiktoken
+django-cors-headers

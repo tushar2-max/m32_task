@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot</title>
+    <link rel="stylesheet" href="{% static 'chatbotApp/style.css' %}">
+    <script>
+        async function sendMessage() {
+            const userMessage = document.getElementById("userMessage").value;
+            const chatbox = document.getElementById("chatbox");
+            const typingIndicator = document.getElementById("typing-indicator");
+
+            if (userMessage.trim()) {
+                chatbox.innerHTML += `<div class="user-message">${userMessage}</div>`;
+                document.getElementById("userMessage").value = "";
+
+                // Show typing indicator
+                typingIndicator.style.display = 'block';
+
+                const response = await fetch("{% url 'chat' %}", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ message: userMessage }),
+                });
+                const data = await response.json();
+
+                // Remove typing indicator and show response
+                typingIndicator.style.display = 'none';
+                chatbox.innerHTML += `<div class="bot-message">${data.response}</div>`;
+                chatbox.scrollTop = chatbox.scrollHeight;
+            }
+        }
+
+        function toggleChat() {
+            const chatContainer = document.getElementById("chat-container");
+            chatContainer.classList.toggle("hidden");
+        }
+    </script>
+</head>
+<body>
+    <div id="chat-widget" onclick="toggleChat()">💬</div>
+    <div id="chat-container" class="hidden">
+        <div id="chatbox" class="chatbox"></div>
+        <!-- LOADING DOTS -->
+        <div class="spinner-box" id="typing-indicator" style="display: none;">
+            <div class="pulse-container">  
+                <div class="pulse-bubble pulse-bubble-1"></div>
+                <div class="pulse-bubble pulse-bubble-2"></div>
+                <div class="pulse-bubble pulse-bubble-3"></div>
+            </div>
+        </div>
+        <div class="chat-input-container">
+            <input type="text" id="userMessage" placeholder="Type a message..." onkeypress="if(event.key === 'Enter') sendMessage()">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+</body>
+</html>
